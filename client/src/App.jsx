@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { Home } from './views/Home'
 import { Game } from './views/Game'
+import { Lobby } from './views/Lobby'
 
 function App() {
 
   const [page, setPage] = useState('home')
   const [gameName, setGameName] = useState('')
+  const [players, setPlayers] = useState([])
 
   return (
     <>
       {page === 'home' && <Home gameName={gameName} setGameName={setGameName} setPage={setPage}/>}
+      {page === 'lobby' && <Lobby gameName={gameName} setPage={setPage} players={players} setPlayers={setPlayers} />}
       {page === 'game' && <Game gameName={gameName} />}
     </>
   )

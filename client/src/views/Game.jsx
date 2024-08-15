@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import socket from '../socketConfig'
+import { DiceBox } from '../components/DiceBox'
 
 export function Game({gameName}) {
     
@@ -27,6 +28,7 @@ export function Game({gameName}) {
     <>
       <button onClick={start}>Start</button>
       <button onClick={turn}>Action!</button>
+      <DiceBox />
     </>
   )
 }

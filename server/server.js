@@ -18,12 +18,10 @@ const io = new Server(server, {
     }
 })
 
-let players = []
-
 io.on('connection', socket => {
     console.log('socket connected')
 
-    gameSocket(socket)
+    gameSocket(socket, io)
 })
 
 server.listen(3000, () => {
