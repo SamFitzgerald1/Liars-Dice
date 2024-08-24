@@ -1,7 +1,7 @@
 module.exports = (socket, io) => {
     socket.on('joinGame', data => {
-        socket.join(data)
-        console.log('joined')
+        socket.join(data.gameName)
+        console.log('joined' + data.gameName)
     })
 
     socket.on('endTurn', data => {
@@ -13,5 +13,7 @@ module.exports = (socket, io) => {
         const playersSet = io.sockets.adapter.rooms.get(data)
         const iterator = playersSet.values()
         for (const entry of iterator) playersArr.push(entry)
+        socket.emit('givePlayers', playersArr)
+        socket.to(data).emit('givePlayers', playersArr)
     })
 }

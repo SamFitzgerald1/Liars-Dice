@@ -3,14 +3,15 @@ import socket from '../socketConfig'
 export function Home({gameName, setGameName, setPage}) {
 
   const joinGame = () => {
-    socket.emit('joinGame', gameName)
+    socket.emit('joinGame', {gameName, username})
     setPage('lobby')
   }
 
   return (
     <>
       <input
-        type="text"
+        type='text'
+        placeholder='Game Name'
         value={gameName}
         onChange={e => setGameName(e.target.value)}
         onKeyDown={e => e.key === 'Enter' && joinGame}
