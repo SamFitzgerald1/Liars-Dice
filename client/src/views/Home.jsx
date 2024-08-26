@@ -1,14 +1,34 @@
 import socket from '../socketConfig'
+import { toast } from 'react-toastify'
 
-export function Home({gameName, setGameName, setPage}) {
+export function Home({gameName, setGameName, setPage, playerName, setPlayerName}) {
 
   const joinGame = () => {
-    socket.emit('joinGame', {gameName, username})
+    if(playerName === '') {
+      toast.warn('No username', {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark"
+        });
+      return
+    }
+    socket.emit('joinGame', {gameName, playerName})
     setPage('lobby')
   }
 
   return (
     <>
+      <input
+        type='text'
+        placeholder='Player Name' 
+        value={playerName}
+        onChange={e => setPlayerName(e.target.value)}
+      />
       <input
         type='text'
         placeholder='Game Name'

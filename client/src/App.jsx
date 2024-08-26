@@ -8,10 +8,11 @@ function App() {
   const [page, setPage] = useState('home')
   const [gameName, setGameName] = useState('')
   const [players, setPlayers] = useState([])
+  const [playerName, setPlayerName] = useState('')
 
   return (
     <>
-      {page === 'home' && <Home gameName={gameName} setGameName={setGameName} setPage={setPage}/>}
+      {page === 'home' && <Home gameName={gameName} setGameName={setGameName} setPage={setPage} playerName={playerName} setPlayerName={setPlayerName} />}
       {page === 'lobby' && <Lobby gameName={gameName} setPage={setPage} players={players} setPlayers={setPlayers} />}
       {page === 'game' && <Game gameName={gameName} />}
     </>
