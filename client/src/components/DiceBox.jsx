@@ -8,7 +8,6 @@ import DiceImage5 from '../images/Dice5.png'
 import DiceImage6 from '../images/Dice6.png'
 
 export function DiceBox() {
-
   const DICE_IMAGES = {
     1: DiceImage1,
     2: DiceImage2,
@@ -24,7 +23,16 @@ export function DiceBox() {
   const [image4, setImage4] = useState(DICE_IMAGES[1])
   const [image5, setImage5] = useState(DICE_IMAGES[1])
   const [image6, setImage6] = useState(DICE_IMAGES[1])
-  
+
+  const roll = () => {
+    setImage1(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setImage2(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setImage3(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setImage4(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setImage5(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setImage6(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+  }
+
   return (
     <>
       <img src={image1} />
@@ -33,6 +41,7 @@ export function DiceBox() {
       <img src={image4} />
       <img src={image5} />
       <img src={image6} />
+      <button onClick={roll}>Roll</button>
     </>
   )
 }

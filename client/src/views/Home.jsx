@@ -14,7 +14,7 @@ export function Home({gameName, setGameName, setPage, playerName, setPlayerName}
         draggable: false,
         progress: undefined,
         theme: "dark"
-        });
+      });
       return
     }
     socket.emit('joinGame', {gameName, playerName})

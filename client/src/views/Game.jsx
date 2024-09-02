@@ -1,34 +1,42 @@
 import React, {useState, useEffect} from 'react'
 import socket from '../socketConfig'
 import { DiceBox } from '../components/DiceBox'
+import { Players } from '../components/Players'
+import { Guess } from '../components/Guess'
 
-export function Game({gameName}) {
+export function Game({gameName, playerName, players}) {
     
-    const [isMyTurn, setIsMyTurn] = useState(false)
-  
-    useEffect(() => {
-      socket.on('startTurn', data => {
-        if(data === socket.id) setIsMyTurn(true)
-      })
-    }, [socket])
-  
-    const turn = () => {
-      if(isMyTurn) {
-        console.log('Action')
-        setIsMyTurn(false)
-        socket.emit('endTurn', gameName)
-      }
-    }
-  
-    const start = () => {
-      setIsMyTurn(true)
-    }
-  
+  const [isMyTurn, setIsMyTurn] = useState(false)
+
+  useEffect(() => {
+    if(playerName === players[0]) setIsMyTurn(true)
+  }, [])
+
+  useEffect(() => {
+    socket.on('prevGuess', () => {
+      console.log('ell')
+    })
+  }, [socket])
+
+  // useEffect(() => {
+  //   socket.on('startTurn', data => {
+  //     if(data === playerName) setIsMyTurn(true)
+  //   })
+  // }, [socket])
+
+  const turn = () => {
+    if(!isMyTurn) return
+    console.log('Action')
+    setIsMyTurn(false)
+    socket.emit('endTurn', {gameName, playerName, players})
+  }
+
   return (
     <>
-      <button onClick={start}>Start</button>
       <button onClick={turn}>Action!</button>
       <DiceBox />
+      <Guess gameName={gameName} />
+      <Players players={players} />
     </>
   )
 }

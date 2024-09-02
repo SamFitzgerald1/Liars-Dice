@@ -14,7 +14,7 @@ function App() {
     <>
       {page === 'home' && <Home gameName={gameName} setGameName={setGameName} setPage={setPage} playerName={playerName} setPlayerName={setPlayerName} />}
       {page === 'lobby' && <Lobby gameName={gameName} setPage={setPage} players={players} setPlayers={setPlayers} />}
-      {page === 'game' && <Game gameName={gameName} />}
+      {page === 'game' && <Game gameName={gameName} playerName={playerName} players={players} />}
     </>
   )
 }

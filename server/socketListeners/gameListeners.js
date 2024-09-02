@@ -5,10 +5,6 @@ module.exports = (socket, io) => {
         console.log('joined ' + data.gameName)
     })
 
-    socket.on('endTurn', data => {
-        //socket.to(data).emit('startTurn', players[(players.indexOf(socket.id) + 1) % players.length])
-    })
-
     socket.on('getPlayers', async data => {
         const playersArr = await io.in(data).fetchSockets()
         for (let i = 0; i < playersArr.length; i++)
@@ -17,4 +13,19 @@ module.exports = (socket, io) => {
         socket.emit('givePlayers', playersArr)
         socket.to(data).emit('givePlayers', playersArr)
     })
+
+    socket.on('startGame', data => {
+        socket.to(data).emit('gamePage')
+    })
+
+    socket.on('endTurn', data => {
+        socket.to(data.gameName).emit('startTurn', data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length])
+    })
+
+    socket.on('guess', data => {
+        console.log('fuckyou')
+        socket.to(data.gameName).emit('prevGuess')
+    })
 }
+
+    

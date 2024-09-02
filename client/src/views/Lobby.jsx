@@ -13,10 +13,21 @@ export function Lobby({gameName, setPage, players, setPlayers}) {
       setPlayers(data)
     })
   }, [socket])
+
+  useEffect(() => {
+    socket.on('gamePage', () => {
+      setPage('game')
+    })
+  }, [])
+
+  const startGame = () => {
+    setPage('game')
+    socket.emit('startGame', gameName)
+  }
   
   return (
     <>
-      <button onclick={() => setPage('game')}>Start Game</button>
+      <button onClick={startGame}>Start Game</button>
       <Players players={players} />
     </>
   )
