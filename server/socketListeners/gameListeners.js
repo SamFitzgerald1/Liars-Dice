@@ -10,8 +10,7 @@ module.exports = (socket, io) => {
         for (let i = 0; i < playersArr.length; i++)
             playersArr[i] = playersArr[i].playerName
         
-        socket.emit('givePlayers', playersArr)
-        socket.to(data).emit('givePlayers', playersArr)
+        io.in(data).emit('givePlayers', playersArr)
     })
 
     socket.on('startGame', data => {
@@ -23,8 +22,8 @@ module.exports = (socket, io) => {
     })
 
     socket.on('guess', data => {
-        console.log('fuckyou')
-        socket.to(data.gameName).emit('prevGuess')
+        console.log(data.gameName)
+        socket.to(data.gameName).emit('prevGuess', {prevNum: data.guessNum, prevDie: data.guessDie})
     })
 }
 

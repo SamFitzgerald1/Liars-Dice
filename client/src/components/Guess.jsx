@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import socket from '../socketConfig'
 import { toast } from 'react-toastify'
 
-export function Guess(gameName) {
+export function Guess({gameName}) {
 
   const [prevNum, setPrevNum] = useState(0)
   const [prevDie, setPrevDie] = useState(0)
@@ -10,13 +10,12 @@ export function Guess(gameName) {
   const [guessNum, setGuessNum] = useState(1)
   const [guessDie, setGuessDie] = useState(1)
 
-  // useEffect(() => {
-  //   socket.on('prevGuess', () => {
-  //     console.log('receiving')
-  //     // setPrevNum(data.prevNum)
-  //     // setPrevDie(data.prevDie)
-  //   })
-  // }, [socket])
+  useEffect(() => {
+    socket.on('prevGuess', data => {
+      setPrevNum(data.prevNum)
+      setPrevDie(data.prevDie)
+    })
+  }, [socket])
 
   const guess = () => {
     if(guessNum < prevNum) {

@@ -17,30 +17,27 @@ export function DiceBox() {
     6: DiceImage6
   }
 
-  const [image1, setImage1] = useState(DICE_IMAGES[1])
-  const [image2, setImage2] = useState(DICE_IMAGES[1])
-  const [image3, setImage3] = useState(DICE_IMAGES[1])
-  const [image4, setImage4] = useState(DICE_IMAGES[1])
-  const [image5, setImage5] = useState(DICE_IMAGES[1])
-  const [image6, setImage6] = useState(DICE_IMAGES[1])
+  const [dice1, setDice1] = useState(DICE_IMAGES[1])
+  const [dice2, setDice2] = useState(DICE_IMAGES[1])
+  const [dice3, setDice3] = useState(DICE_IMAGES[1])
+  const [dice4, setDice4] = useState(DICE_IMAGES[1])
+  const [dice5, setDice5] = useState(DICE_IMAGES[1])
 
   const roll = () => {
-    setImage1(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-    setImage2(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-    setImage3(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-    setImage4(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-    setImage5(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-    setImage6(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setDice1(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setDice2(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setDice3(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setDice4(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
+    setDice5(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
   }
 
   return (
     <>
-      <img src={image1} />
-      <img src={image2} />
-      <img src={image3} />
-      <img src={image4} />
-      <img src={image5} />
-      <img src={image6} />
+      <img src={dice1} />
+      <img src={dice2} />
+      <img src={dice3} />
+      <img src={dice4} />
+      <img src={dice5} />
       <button onClick={roll}>Roll</button>
     </>
   )

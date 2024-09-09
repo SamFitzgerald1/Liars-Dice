@@ -12,12 +12,6 @@ export function Game({gameName, playerName, players}) {
     if(playerName === players[0]) setIsMyTurn(true)
   }, [])
 
-  useEffect(() => {
-    socket.on('prevGuess', () => {
-      console.log('ell')
-    })
-  }, [socket])
-
   // useEffect(() => {
   //   socket.on('startTurn', data => {
   //     if(data === playerName) setIsMyTurn(true)
