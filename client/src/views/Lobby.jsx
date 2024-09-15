@@ -21,7 +21,6 @@ export function Lobby({gameName, setPage, players, setPlayers}) {
   }, [])
 
   const startGame = () => {
-    setPage('game')
     socket.emit('startGame', gameName)
   }
   

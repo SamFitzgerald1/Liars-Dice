@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react'
 import socket from '../socketConfig'
 import { toast } from 'react-toastify'
 
-export function Guess({gameName}) {
-
-  const [prevNum, setPrevNum] = useState(0)
-  const [prevDie, setPrevDie] = useState(0)
+export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevDie, setPrevDie, isCalzone, isMyTurn, setIsMyTurn, isFirstTurn, setIsFirstTurn}) {
   
   const [guessNum, setGuessNum] = useState(1)
   const [guessDie, setGuessDie] = useState(1)
@@ -18,6 +15,22 @@ export function Guess({gameName}) {
   }, [socket])
 
   const guess = () => {
+    if(!isMyTurn) return
+    
+    if(isCalzone && guessNum !== prevNum) {
+      toast.warn('You can\'t change the Dice Value during calzone', {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: "dark"
+      })
+      socket.emit('calzoneViolation')
+      return
+    }
     if(guessNum < prevNum) {
       toast.warn('Dice Count must increase', {
         position: "bottom-center",
@@ -28,7 +41,7 @@ export function Guess({gameName}) {
         draggable: false,
         progress: undefined,
         theme: "dark"
-      });
+      })
       return
     }
     if(guessNum === prevNum && guessDie <= prevDie) {
@@ -41,10 +54,13 @@ export function Guess({gameName}) {
         draggable: false,
         progress: undefined,
         theme: "dark"
-      });
+      })
       return
     }
-    socket.emit('guess', {guessNum, guessDie, gameName})
+    console.log('guessing')
+    socket.emit('guess', {guessNum, guessDie, gameName, playerName, players})
+    setIsMyTurn(false)
+    // if(isFirstTurn) setIsFirstTurn(false)
   }
     
   return (

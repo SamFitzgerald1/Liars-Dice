@@ -1,8 +1,11 @@
+const gameDice = {}
+const lastGuesser = {}
+
 module.exports = (socket, io) => {
     socket.on('joinGame', data => {
         socket.playerName = data.playerName
         socket.join(data.gameName)
-        console.log('joined ' + data.gameName)
+        console.log('player ' + socket.playerName + ' joined ' + data.gameName)
     })
 
     socket.on('getPlayers', async data => {
@@ -14,17 +17,86 @@ module.exports = (socket, io) => {
     })
 
     socket.on('startGame', data => {
-        socket.to(data).emit('gamePage')
-    })
-
-    socket.on('endTurn', data => {
-        socket.to(data.gameName).emit('startTurn', data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length])
+        gameDice[data] = {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+            6: 0
+        }
+        io.in(data).emit('gamePage')
     })
 
     socket.on('guess', data => {
-        console.log(data.gameName)
+        lastGuesser[data.gameName] = data.playerName
         socket.to(data.gameName).emit('prevGuess', {prevNum: data.guessNum, prevDie: data.guessDie})
+        io.in(data.gameName).emit('startTurn', {player: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: false})
+    })
+
+    socket.on('skip', data => {
+        io.in(data.gameName).emit('startTurn', {player: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: data.isFirstTurn})
+    })
+
+    socket.on('roundStart', data => {
+        io.in(data.gameName).emit('startTurn', {player: data.loser, isFirstTurn: true})
+    })
+
+    socket.on('diceInfo', data => {
+        const diceInfo = data.diceInfo
+
+        for(key of Object.keys(diceInfo))
+            gameDice[data.gameName][diceInfo[key]]++
+
+        console.log('gameDice: ' + gameDice)
+    })
+
+    // socket.on('bullshit', data => {
+    //     console.log('1')
+    //     if(data.prevDie === 1 || data.isCalzone) {
+    //         console.log('1a')
+    //         if(gameDice[data.gameName][data.prevDie] < data.prevNum) {
+    //             console.log('1aa')
+    //             socket.to(lastGuesser[data.gameName].id).emit('loseDice')
+    //             socket.to(data.gameName).emit('startTurn', lastGuesser[data.gameName].playerName)
+    //         } else {
+    //             console.log('1ab')
+    //             socket.emit('loseDice')
+    //             socket.to(data.gameName).emit('startTurn', data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length])
+    //         }
+    //     } else {
+    //         console.log('1b')
+    //         if(gameDice[data.gameName][data.prevDie] + gameDice[data.gameName][1] < data.prevNum) {
+    //             console.log('1ba')
+    //             socket.to(lastGuesser[data.gameName].id).emit('loseDice')
+    //             socket.to(data.gameName).emit('startTurn', lastGuesser[data.gameName].playerName)
+    //         } else {
+    //             console.log('1bb')
+    //             socket.emit('loseDice')
+    //             socket.to(data.gameName).emit('startTurn', data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length])
+    //         }
+    //     }
+    //     console.log('2')
+    //     io.in(data.gameName).emit('roll')
+    // })
+
+    socket.on('bullshit', data => {
+        if(data.prevDie === 1 || data.isCalzone) {
+            if(gameDice[data.gameName][data.prevDie] < data.prevNum) {
+                io.in(data.gameName).emit('roundEnd', lastGuesser[data.gameName])
+            } else {
+                io.in(data.gameName).emit('roundEnd', socket.playerName)
+            }
+        } else {
+            if(gameDice[data.gameName][data.prevDie] + gameDice[data.gameName][1] < data.prevNum){
+                io.in(data.gameName).emit('roundEnd', lastGuesser[data.gameName])
+            } else {
+                io.in(data.gameName).emit('roundEnd', socket.playerName)
+            }
+        }
+    })
+
+    socket.on('calzoneViolation', () => {
+        socket.emit('loseDice')
     })
 }
-
-    
