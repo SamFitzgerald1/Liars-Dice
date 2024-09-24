@@ -18,6 +18,7 @@ module.exports = (socket, io) => {
 
     socket.on('startGame', data => {
         gameDice[data] = {
+            0: 0,
             1: 0,
             2: 0,
             3: 0,
@@ -43,42 +44,16 @@ module.exports = (socket, io) => {
     })
 
     socket.on('diceInfo', data => {
+        
         const diceInfo = data.diceInfo
+
+        console.log(diceInfo)
 
         for(key of Object.keys(diceInfo))
             gameDice[data.gameName][diceInfo[key]]++
 
-        console.log('gameDice: ' + gameDice)
+        console.log(gameDice)
     })
-
-    // socket.on('bullshit', data => {
-    //     console.log('1')
-    //     if(data.prevDie === 1 || data.isCalzone) {
-    //         console.log('1a')
-    //         if(gameDice[data.gameName][data.prevDie] < data.prevNum) {
-    //             console.log('1aa')
-    //             socket.to(lastGuesser[data.gameName].id).emit('loseDice')
-    //             socket.to(data.gameName).emit('startTurn', lastGuesser[data.gameName].playerName)
-    //         } else {
-    //             console.log('1ab')
-    //             socket.emit('loseDice')
-    //             socket.to(data.gameName).emit('startTurn', data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length])
-    //         }
-    //     } else {
-    //         console.log('1b')
-    //         if(gameDice[data.gameName][data.prevDie] + gameDice[data.gameName][1] < data.prevNum) {
-    //             console.log('1ba')
-    //             socket.to(lastGuesser[data.gameName].id).emit('loseDice')
-    //             socket.to(data.gameName).emit('startTurn', lastGuesser[data.gameName].playerName)
-    //         } else {
-    //             console.log('1bb')
-    //             socket.emit('loseDice')
-    //             socket.to(data.gameName).emit('startTurn', data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length])
-    //         }
-    //     }
-    //     console.log('2')
-    //     io.in(data.gameName).emit('roll')
-    // })
 
     socket.on('bullshit', data => {
         if(data.prevDie === 1 || data.isCalzone) {
@@ -94,9 +69,15 @@ module.exports = (socket, io) => {
                 io.in(data.gameName).emit('roundEnd', socket.playerName)
             }
         }
+
+        for(key in Object.keys(gameDice[data.gameName]))
+            gameDice[data.gameName][key] = 0
+
+        console.log(gameDice)
+        
     })
 
     socket.on('calzoneViolation', () => {
-        socket.emit('loseDice')
+        socket.emit('roundEnd', socket.playerName)
     })
 }

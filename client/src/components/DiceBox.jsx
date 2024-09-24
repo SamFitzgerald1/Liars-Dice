@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
+import DiceImage0 from '../images/dice0.jpg'
 import DiceImage1 from '../images/Dice1.png'
 import DiceImage2 from '../images/Dice2.png'
 import DiceImage3 from '../images/Dice3.png'
@@ -10,6 +11,7 @@ import DiceImage6 from '../images/Dice6.png'
 import socket from '../socketConfig'
 
 const DICE_IMAGES = {
+  0: DiceImage0,
   1: DiceImage1,
   2: DiceImage2,
   3: DiceImage3,
@@ -18,82 +20,82 @@ const DICE_IMAGES = {
   6: DiceImage6
 }
 
-const DICE_IMAGE_KEYS = [1, 2, 3, 4, 5, 6]
+const DICE_IMAGE_KEYS = [0, 1, 2, 3, 4, 5, 6]
 
 export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft, setDiceLeft, isMyTurn, setIsFirstTurn}) {
 
-  const [dice1, setDice1] = useState(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-  const [dice2, setDice2] = useState(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-  const [dice3, setDice3] = useState(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-  const [dice4, setDice4] = useState(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-  const [dice5, setDice5] = useState(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-
-  const [diceInfo, setDiceInfo] = useState({
-    'dice1': DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice1),
-    'dice2': DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice2),
-    'dice3': DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice3),
-    'dice4': DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice4),
-    'dice5': DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice5)
+  const [dice, setDice] = useState({
+    die1: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
+    die2: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
+    die3: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
+    die4: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
+    die5: DICE_IMAGES[Math.floor(Math.random() * 6) + 1]
   })
 
   useEffect(() => {
+
+    console.log('running')
+
+    const diceInfo = {
+      die1: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die1),
+      die2: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die2),
+      die3: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die3),
+      die4: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die4),
+      die5: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die5)
+    }
+
+    console.log(diceInfo)
+    
     socket.emit('diceInfo', {gameName, diceInfo})
-  }, [])
+
+  }, [dice])
 
   useEffect(() => {
-    socket.on('roundEnd', data => {
+
+    function endRound(data) {
+
+      const tempDice = Object.assign({}, dice)
+
       if(playerName === data) {
-        switch (diceLeft) {
-          case 5: 
-            console.log('2')
-            setDice1(0)
-            setDiceLeft(4)
+        for(let key of Object.keys(tempDice)) {
+          if(tempDice[key] !== 0) {
+            tempDice[key] = 0
             break
-          case 4:
-            setDice2(0)
-            setDiceLeft(3)
-            break
-          case 3:
-            setDice3(0)
-            setDiceLeft(2)
-            break
-          case 2:
-            setDice4(0)
-            setDiceLeft(1)
-            break
-          case 1:
-            setDice5(0)
-            setDiceLeft(0)
-            break
+          }
         }
       }
-      if(dice1 === 0) setDice1(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-      if(dice2 === 0) setDice2(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-      if(dice3 === 0) setDice3(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-      if(dice4 === 0) setDice4(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
-      if(dice5 === 0) setDice5(DICE_IMAGES[Math.floor(Math.random() * 6) + 1])
 
-      setDiceInfo({
-        'dice1': dice1,
-        'dice2': dice2,
-        'dice3': dice3,
-        'dice4': dice4,
-        'dice5': dice5
-      })
+      tempDice.die1 = tempDice.die1 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
+      tempDice.die2 = tempDice.die2 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
+      tempDice.die3 = tempDice.die3 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
+      tempDice.die4 = tempDice.die4 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
+      tempDice.die5 = tempDice.die5 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
+
+      setDice(tempDice)
+
       setPrevNum(0)
       setPrevDie(0)
+      
       socket.emit('roundStart', {gameName: gameName, loser: data})
-      socket.emit('diceInfo', {gameName, diceInfo})
-    })
-  }, [socket])
+
+    }
+    
+    socket.on('roundEnd', endRound)
+
+    return () => {
+      socket.off('roundEnd', endRound)
+    }
+    
+  }, [diceLeft])
 
   return (
     <>
-      <img src={dice1} />
-      <img src={dice2} />
-      <img src={dice3} />
-      <img src={dice4} />
-      <img src={dice5} />
+      <img src={dice.die1} />
+      <img src={dice.die2} />
+      <img src={dice.die3} />
+      <img src={dice.die4} />
+      <img src={dice.die5} />
+      <button onClick={() => console.log(dice)} >DICE</button>
     </>
   )
 }
