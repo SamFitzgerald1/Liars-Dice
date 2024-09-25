@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import socket from '../socketConfig'
 import { toast } from 'react-toastify'
 
@@ -7,16 +7,27 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
   const [guessNum, setGuessNum] = useState(1)
   const [guessDie, setGuessDie] = useState(1)
 
+  // for socket listener 'prevGuess'
   useEffect(() => {
-    socket.on('prevGuess', data => {
+
+    function setPrevGuess(data) {
       setPrevNum(data.prevNum)
       setPrevDie(data.prevDie)
-    })
-  }, [socket])
-
-  const guess = () => {
-    if(!isMyTurn) return
+    }
     
+    socket.on('prevGuess', setPrevGuess)
+
+    return () => {
+      socket.off('prevGuess', setGuessDie)
+    }
+
+  }, [])
+
+  // processes player guesses
+  const guess = useCallback(() => {
+    if(!isMyTurn) return
+
+    // check if guess breaks calzone rules
     if(isCalzone && guessNum !== prevNum) {
       toast.warn('You can\'t change the Dice Value during calzone', {
         position: "bottom-center",
@@ -31,6 +42,8 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
       socket.emit('calzoneViolation')
       return
     }
+    
+    // check guess validity
     if(guessNum < prevNum) {
       toast.warn('Dice Count must increase', {
         position: "bottom-center",
@@ -44,6 +57,7 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
       })
       return
     }
+
     if(guessNum === prevNum && guessDie <= prevDie) {
       toast.warn('Dice Count or Value must increase', {
         position: "bottom-center",
@@ -57,11 +71,11 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
       })
       return
     }
-    console.log('guessing')
+    
     socket.emit('guess', {guessNum, guessDie, gameName, playerName, players})
     setIsMyTurn(false)
-    // if(isFirstTurn) setIsFirstTurn(false)
-  }
+
+  }, [isMyTurn, isCalzone, guessNum, prevNum, guessDie, prevDie])
     
   return (
     <>

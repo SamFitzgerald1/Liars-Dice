@@ -1,28 +1,47 @@
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import socket from "../socketConfig"
 import { Players } from "../components/Players"
 
 export function Lobby({gameName, setPage, players, setPlayers}) {
 
+  // requests list of players in game from server
   useEffect(() => {
     socket.emit('getPlayers', gameName)
   }, [])
 
+  // socket listener for 'givePlayers'
   useEffect(() => {
-    socket.on('givePlayers', data => {
-      setPlayers(data)
-    })
-  }, [socket])
 
-  useEffect(() => {
-    socket.on('gamePage', () => {
-      setPage('game')
-    })
+    function setPlayerList() {
+      setPlayers(data)
+    }
+
+    socket.on('givePlayers', setPlayerList)
+
+    return () => {
+      socket.off('givePlayers', setPlayerList)
+    }
+
   }, [])
 
-  const startGame = () => {
+  // socket listener for 'gamePage'
+  useEffect(() => {
+
+    function setPageGame() {
+      setPage('game')
+    }
+
+    socket.on('gamePage', setPageGame)
+
+    return () => {
+      socket.off('gamePage', setPageGame)
+    }
+
+  }, [])
+
+  const startGame = useCallback(() => {
     socket.emit('startGame', gameName)
-  }
+  })
   
   return (
     <>

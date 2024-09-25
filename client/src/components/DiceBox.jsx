@@ -20,6 +20,7 @@ const DICE_IMAGES = {
   6: DiceImage6
 }
 
+// for converting dice images to number values
 const DICE_IMAGE_KEYS = [0, 1, 2, 3, 4, 5, 6]
 
 export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft, setDiceLeft, isMyTurn, setIsFirstTurn}) {
@@ -32,10 +33,10 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
     die5: DICE_IMAGES[Math.floor(Math.random() * 6) + 1]
   })
 
+  // sends user's dice data to the server upon update
   useEffect(() => {
 
-    console.log('running')
-
+    // convert the die's image value to the correct number
     const diceInfo = {
       die1: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die1),
       die2: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die2),
@@ -43,19 +44,20 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
       die4: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die4),
       die5: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die5)
     }
-
-    console.log(diceInfo)
     
     socket.emit('diceInfo', {gameName, diceInfo})
 
   }, [dice])
 
+  // for socket listener 'roundEnd'
   useEffect(() => {
 
+    // handles change between current and next round
     function endRound(data) {
 
       const tempDice = Object.assign({}, dice)
 
+      // remove one die from losing player
       if(playerName === data) {
         for(let key of Object.keys(tempDice)) {
           if(tempDice[key] !== 0) {
@@ -73,6 +75,7 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
 
       setDice(tempDice)
 
+      // reset value of previous guess set in Guess.jsx
       setPrevNum(0)
       setPrevDie(0)
       
@@ -86,7 +89,7 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
       socket.off('roundEnd', endRound)
     }
     
-  }, [diceLeft])
+  }, [])
 
   return (
     <>
@@ -95,7 +98,6 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
       <img src={dice.die3} />
       <img src={dice.die4} />
       <img src={dice.die5} />
-      <button onClick={() => console.log(dice)} >DICE</button>
     </>
   )
 }

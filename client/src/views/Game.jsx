@@ -20,20 +20,36 @@ export function Game({gameName, playerName, players}) {
   const [isCalzone, setIsCalzone] = useState(false)
   const [hasCalzoned, setHasCalzoned] = useState(false)
 
+  // starts the first turn of the game
   useEffect(() => {
     setIsMyTurn(playerName === players[0])
   }, [])
 
+  // socket listener for 'startTurn'
   useEffect(() => {
-    socket.on('startTurn', data => {
+
+    function turnStart(data) {
+
+      // for checking if calzone call is allowable !!!MAY GET MOVED!!!
       setIsFirstTurn(data.isFirstTurn)
+      
       setIsMyTurn(data.player === playerName)
+
+      // check if player is still in the game !!!FIND ANOTHER WAY TO DO THIS!!! 
       if(diceLeft === 0) {
         setIsMyTurn(false)
         socket.emit('skip', {gameName: gameName, playerName: playerName, players: players, isFirstTurn: data.isFirstTurn})
       }
-    })
-  }, [socket])
+    }
+
+    socket.on('startTurn', turnStart)
+
+    return () => {
+      socket.off('startTurn', turnStart)
+    }
+
+    // CHANGE DEPENDENCIES IF DICELEFT STOPS EXISTING
+  }, [diceLeft])
 
   return (
     <>
