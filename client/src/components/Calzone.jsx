@@ -1,17 +1,33 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import socket from '../socketConfig'
 
-export function Calzone({setIsCalzone, isMyTurn, isFirstTurn, hasCalzoned, setHasCalzoned}) {
+export function Calzone({gameName, setIsCalzone, isMyTurn, isFirstTurn, hasCalzoned, setHasCalzoned}) {
 
-    const calzone = () => {
+  // for socket listener 'setCalzone'
+  useEffect(() => {
 
-      // check if calzone call is allowed 
-      if(!isMyTurn || !isFirstTurn || hasCalzoned) return
-
+    function calzoneSet() {
       setIsCalzone(true)
-      setHasCalzoned(true)
-      
     }
+
+    socket.on('setCalzone', calzoneSet)
+
+    return () => {
+      socket.off('setCalzone', calzoneSet)
+    }
+    
+  }, [])
+  
+  const calzone = useCallback(() => {
+
+    // check if calzone call is allowed
+    if(!isMyTurn || !isFirstTurn || hasCalzoned) return
+
+    socket.emit('calzone', gameName)
+
+    setHasCalzoned(true)
+
+  }, [isMyTurn, isFirstTurn, hasCalzoned])
     
   return (
     <>

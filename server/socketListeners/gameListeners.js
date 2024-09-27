@@ -40,20 +40,20 @@ module.exports = (socket, io) => {
     socket.on('guess', data => {
         lastGuesser[data.gameName] = data.playerName
         socket.to(data.gameName).emit('prevGuess', {prevNum: data.guessNum, prevDie: data.guessDie})
-        io.in(data.gameName).emit('startTurn', {player: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: false})
+        io.in(data.gameName).emit('startTurn', {playerName: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: false})
     })
 
     // starts next players turn
     // for use when players are out of the game
     // with is first turn value perserved 
     socket.on('skip', data => {
-        io.in(data.gameName).emit('startTurn', {player: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: data.isFirstTurn})
+        io.in(data.gameName).emit('startTurn', {playerName: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: data.isFirstTurn})
     })
 
     // starts the first turn of the round 
     // with is first turn true
     socket.on('roundStart', data => {
-        io.in(data.gameName).emit('startTurn', {player: data.loser, isFirstTurn: true})
+        io.in(data.gameName).emit('startTurn', {playerName: data.loser, isFirstTurn: true})
     })
 
     // puts the dice data on the gameDice object
@@ -85,6 +85,11 @@ module.exports = (socket, io) => {
         // clearing dice data
         for(key in Object.keys(gameDice[data.gameName]))
             gameDice[data.gameName][key] = 0
+    })
+
+    // tells all players that calzone has been called 
+    socket.on('calzone', data => {
+        io.in(data).emit('setCalzone')
     })
 
     // handles round end for a calzone violation loss

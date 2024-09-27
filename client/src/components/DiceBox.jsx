@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import DiceImage0 from '../images/dice0.jpg'
 import DiceImage1 from '../images/Dice1.png'
@@ -23,26 +23,34 @@ const DICE_IMAGES = {
 // for converting dice images to number values
 const DICE_IMAGE_KEYS = [0, 1, 2, 3, 4, 5, 6]
 
-export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft, setDiceLeft, isMyTurn, setIsFirstTurn}) {
+export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft, setDiceLeft, isMyTurn, setIsFirstTurn, setIsCalzone, setIsOut}) {
+
+  const roll = useCallback(() => {
+    return DICE_IMAGES[Math.floor(Math.random() * 6) + 1]
+  }, [])
+
+  // converts a dice image to a dice value
+  const convert = useCallback(die => {
+    return DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === die)
+  }, [])
 
   const [dice, setDice] = useState({
-    die1: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
-    die2: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
-    die3: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
-    die4: DICE_IMAGES[Math.floor(Math.random() * 6) + 1],
-    die5: DICE_IMAGES[Math.floor(Math.random() * 6) + 1]
+    die1: roll(),
+    die2: roll(),
+    die3: roll(),
+    die4: roll(),
+    die5: roll()
   })
 
   // sends user's dice data to the server upon update
   useEffect(() => {
 
-    // convert the die's image value to the correct number
     const diceInfo = {
-      die1: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die1),
-      die2: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die2),
-      die3: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die3),
-      die4: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die4),
-      die5: DICE_IMAGE_KEYS.find(key => DICE_IMAGES[key] === dice.die5)
+      die1: convert(dice.die1),
+      die2: convert(dice.die2),
+      die3: convert(dice.die3),
+      die4: convert(dice.die4),
+      die5: convert(dice.die5)
     }
     
     socket.emit('diceInfo', {gameName, diceInfo})
@@ -62,22 +70,25 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
         for(let key of Object.keys(tempDice)) {
           if(tempDice[key] !== 0) {
             tempDice[key] = 0
+            if(key === 'die5') setIsOut(true)
             break
           }
         }
       }
 
-      tempDice.die1 = tempDice.die1 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
-      tempDice.die2 = tempDice.die2 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
-      tempDice.die3 = tempDice.die3 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
-      tempDice.die4 = tempDice.die4 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
-      tempDice.die5 = tempDice.die5 !== 0 ? DICE_IMAGES[Math.floor(Math.random() * 6) + 1] : DICE_IMAGES[0]
+      tempDice.die1 = tempDice.die1 !== 0 ? roll() : DICE_IMAGES[0]
+      tempDice.die2 = tempDice.die2 !== 0 ? roll() : DICE_IMAGES[0]
+      tempDice.die3 = tempDice.die3 !== 0 ? roll() : DICE_IMAGES[0]
+      tempDice.die4 = tempDice.die4 !== 0 ? roll() : DICE_IMAGES[0]
+      tempDice.die5 = tempDice.die5 !== 0 ? roll() : DICE_IMAGES[0]
 
       setDice(tempDice)
 
       // reset value of previous guess set in Guess.jsx
       setPrevNum(0)
       setPrevDie(0)
+
+      setIsCalzone(false)
       
       socket.emit('roundStart', {gameName: gameName, loser: data})
 
@@ -89,7 +100,7 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
       socket.off('roundEnd', endRound)
     }
     
-  }, [])
+  }, [dice])
 
   return (
     <>

@@ -16,6 +16,7 @@ export function Game({gameName, playerName, players}) {
   const [prevDie, setPrevDie] = useState(0)
 
   const [diceLeft, setDiceLeft] = useState(5)
+  const [isOut, setIsOut] = useState(false)
 
   const [isCalzone, setIsCalzone] = useState(false)
   const [hasCalzoned, setHasCalzoned] = useState(false)
@@ -33,10 +34,10 @@ export function Game({gameName, playerName, players}) {
       // for checking if calzone call is allowable !!!MAY GET MOVED!!!
       setIsFirstTurn(data.isFirstTurn)
       
-      setIsMyTurn(data.player === playerName)
+      setIsMyTurn(data.playerName === playerName)
 
-      // check if player is still in the game !!!FIND ANOTHER WAY TO DO THIS!!! 
-      if(diceLeft === 0) {
+      // check if player is still in the game
+      if(isOut) {
         setIsMyTurn(false)
         socket.emit('skip', {gameName: gameName, playerName: playerName, players: players, isFirstTurn: data.isFirstTurn})
       }
@@ -48,16 +49,15 @@ export function Game({gameName, playerName, players}) {
       socket.off('startTurn', turnStart)
     }
 
-    // CHANGE DEPENDENCIES IF DICELEFT STOPS EXISTING
-  }, [diceLeft])
+  }, [isOut])
 
   return (
     <>
       {isMyTurn && <TurnIndicator />}
-      <DiceBox gameName={gameName} playerName={playerName} setPrevNum={setPrevNum} setPrevDie={setPrevDie} diceLeft={diceLeft} setDiceLeft={setDiceLeft} isMyTurn={isMyTurn} setIsFirstTurn={setIsFirstTurn} />
+      <DiceBox gameName={gameName} playerName={playerName} setPrevNum={setPrevNum} setPrevDie={setPrevDie} diceLeft={diceLeft} setDiceLeft={setDiceLeft} isMyTurn={isMyTurn} setIsFirstTurn={setIsFirstTurn} setIsCalzone={setIsCalzone} setIsOut={setIsOut} />
       <Guess gameName={gameName} playerName={playerName} players={players} prevNum={prevNum} setPrevNum={setPrevNum} prevDie={prevDie} setPrevDie={setPrevDie} isCalzone={isCalzone} isMyTurn={isMyTurn} setIsMyTurn={setIsMyTurn} isFirstTurn={isFirstTurn} setIsFirstTurn={setIsFirstTurn} />
       <Bullshit gameName={gameName} playerName={playerName} players={players} prevNum={prevNum} prevDie={prevDie} isCalzone={isCalzone} isMyTurn={isMyTurn} setIsMyTurn={setIsMyTurn} isFirstTurn={isFirstTurn} />
-      <Calzone setIsCalzone={setIsCalzone} isMyTurn={isMyTurn} isFirstTurn={isFirstTurn} hasCalzoned={hasCalzoned} setHasCalzoned={setHasCalzoned} />
+      <Calzone gameName={gameName} setIsCalzone={setIsCalzone} isMyTurn={isMyTurn} isFirstTurn={isFirstTurn} hasCalzoned={hasCalzoned} setHasCalzoned={setHasCalzoned} />
       <Players players={players} />
     </>
   )
