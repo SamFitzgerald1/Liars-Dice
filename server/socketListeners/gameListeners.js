@@ -3,6 +3,9 @@ const gameDice = {}
 // holds name of player who last guessed for different games
 const lastGuesser = {}
 
+// holds value to tell server when different games should end 
+const gameEndIndicator = {}
+
 module.exports = (socket, io) => {
 
     // adds socket to game room
@@ -23,7 +26,7 @@ module.exports = (socket, io) => {
     })
 
     socket.on('startGame', data => {
-        gameDice[data] = {
+        gameDice[data.gameName] = {
             0: 0,
             1: 0,
             2: 0,
@@ -32,6 +35,8 @@ module.exports = (socket, io) => {
             5: 0,
             6: 0
         }
+        // game is over when this number of players is out
+        gameEndIndicator[data.gameName] = data.players.length - 1
         io.in(data).emit('gamePage')
     })
 
@@ -85,6 +90,13 @@ module.exports = (socket, io) => {
         // clearing dice data
         for(key in Object.keys(gameDice[data.gameName]))
             gameDice[data.gameName][key] = 0
+    })
+
+    // removes a player from the count
+    // if count is zero (only one player left in game) tell all sockets game is over
+    socket.on('playerOut', data => {
+        if(data.isOut === true) gameEndIndicator[data.gameName]--
+        if(gameEndIndicator[data.gameName] === 0) socket.emit('gameEnd')
     })
 
     // tells all players that calzone has been called 

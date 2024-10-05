@@ -50,6 +50,10 @@ export function Game({gameName, playerName, players}) {
     }
 
   }, [isOut])
+  
+  useEffect(() => {
+    socket.emit('playerOut', {gameName: gameName, isOut: isOut})
+  }, [isOut])
 
   return (
     <>

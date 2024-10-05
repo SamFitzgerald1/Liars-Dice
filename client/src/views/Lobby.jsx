@@ -40,8 +40,8 @@ export function Lobby({gameName, setPage, players, setPlayers}) {
   }, [])
 
   const startGame = useCallback(() => {
-    socket.emit('startGame', gameName)
-  })
+    socket.emit('startGame', {gameName: gameName, players: players})
+  }, [])
   
   return (
     <>
