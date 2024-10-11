@@ -68,19 +68,20 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
       // remove one die from losing player
       if(playerName === data) {
         for(let key of Object.keys(tempDice)) {
-          if(tempDice[key] !== 0) {
-            tempDice[key] = 0
+          if(tempDice[key] !== DICE_IMAGES[0]) {
+            tempDice[key] = DICE_IMAGES[0]
+            // written strangely to prevent unecessary changes
             if(key === 'die5') setIsOut(true)
             break
           }
         }
       }
 
-      tempDice.die1 = tempDice.die1 !== 0 ? roll() : DICE_IMAGES[0]
-      tempDice.die2 = tempDice.die2 !== 0 ? roll() : DICE_IMAGES[0]
-      tempDice.die3 = tempDice.die3 !== 0 ? roll() : DICE_IMAGES[0]
-      tempDice.die4 = tempDice.die4 !== 0 ? roll() : DICE_IMAGES[0]
-      tempDice.die5 = tempDice.die5 !== 0 ? roll() : DICE_IMAGES[0]
+      tempDice.die1 = tempDice.die1 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+      tempDice.die2 = tempDice.die2 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+      tempDice.die3 = tempDice.die3 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+      tempDice.die4 = tempDice.die4 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+      tempDice.die5 = tempDice.die5 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
 
       setDice(tempDice)
 

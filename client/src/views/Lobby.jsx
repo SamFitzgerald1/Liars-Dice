@@ -12,7 +12,7 @@ export function Lobby({gameName, setPage, players, setPlayers}) {
   // socket listener for 'givePlayers'
   useEffect(() => {
 
-    function setPlayerList() {
+    function setPlayerList(data) {
       setPlayers(data)
     }
 
@@ -40,8 +40,9 @@ export function Lobby({gameName, setPage, players, setPlayers}) {
   }, [])
 
   const startGame = useCallback(() => {
+    console.log(players)
     socket.emit('startGame', {gameName: gameName, players: players})
-  }, [])
+  }, [players])
   
   return (
     <>

@@ -2,9 +2,10 @@
 const gameDice = {}
 // holds name of player who last guessed for different games
 const lastGuesser = {}
-
 // holds value to tell server when different games should end 
 const gameEndIndicator = {}
+// holds game statistics for each player
+const gameStats = {}
 
 module.exports = (socket, io) => {
 
@@ -13,6 +14,13 @@ module.exports = (socket, io) => {
         // socket knows player-given username
         socket.playerName = data.playerName
         socket.join(data.gameName)
+        // gameStats[data.gameName][socket.playerName] = {
+        //     correctBullshits: 0,
+        //     incorrectBullshits: 0,
+        //     incorrectGuesses: 0,
+        //     calzoneViolations: 0,
+        //     position: 0
+        // }
         console.log('player ' + socket.playerName + ' joined ' + data.gameName)
     })
 
@@ -37,7 +45,17 @@ module.exports = (socket, io) => {
         }
         // game is over when this number of players is out
         gameEndIndicator[data.gameName] = data.players.length - 1
-        io.in(data).emit('gamePage')
+        gameStats[data.gameName] = {}
+        for(let i = 0; i < data.players.length; i++) {
+            gameStats[data.gameName][data.players[i]] = {
+                'correctBullshits': 0,
+                'incorrectBullshits': 0,
+                'incorrectGuesses': 0,
+                'calzoneViolations': 0,
+                'position': 0
+            }
+        }
+        io.in(data.gameName).emit('gamePage')
     })
 
     // sends guess data to next player and starts their turn
@@ -76,14 +94,20 @@ module.exports = (socket, io) => {
         if(data.prevDie === 1 || data.isCalzone) {
             if(gameDice[data.gameName][data.prevDie] < data.prevNum) {
                 io.in(data.gameName).emit('roundEnd', lastGuesser[data.gameName])
+                gameStats[data.gameName][socket.playerName]['correctBullshits']++
+                gameStats[data.gameName][lastGuesser[data.gameName]]['incorrectGuesses']++
             } else {
                 io.in(data.gameName).emit('roundEnd', socket.playerName)
+                gameStats[data.gameName][socket.playerName]['incorrectBullshits']++
             }
         } else {
             if(gameDice[data.gameName][data.prevDie] + gameDice[data.gameName][1] < data.prevNum){
                 io.in(data.gameName).emit('roundEnd', lastGuesser[data.gameName])
+                gameStats[data.gameName][socket.playerName]['correctBullshits']++
+                gameStats[data.gameName][lastGuesser[data.gameName]]['incorrectGuesses']++
             } else {
                 io.in(data.gameName).emit('roundEnd', socket.playerName)
+                gameStats[data.gameName][socket.playerName]['incorrectBullshits']++
             }
         }
         
@@ -95,8 +119,11 @@ module.exports = (socket, io) => {
     // removes a player from the count
     // if count is zero (only one player left in game) tell all sockets game is over
     socket.on('playerOut', data => {
-        if(data.isOut === true) gameEndIndicator[data.gameName]--
-        if(gameEndIndicator[data.gameName] === 0) socket.emit('gameEnd')
+        if(data.isOut) {
+            gameStats[data.gameName][socket.playerName]['position'] = gameEndIndicator[data.gameName] + 1
+            gameEndIndicator[data.gameName]--
+        }
+        if(gameEndIndicator[data.gameName] === 0) io.in(data.gameName).emit('gameEnd')
     })
 
     // tells all players that calzone has been called 
@@ -105,7 +132,12 @@ module.exports = (socket, io) => {
     })
 
     // handles round end for a calzone violation loss
-    socket.on('calzoneViolation', () => {
+    socket.on('calzoneViolation', data => {
         socket.emit('roundEnd', socket.playerName)
+        gameStats[data][socket.playerName]['calzoneViolations']++
+    })
+
+    socket.on('getStats', data => {
+        io.in(data).emit('giveStats', gameStats[data])
     })
 }

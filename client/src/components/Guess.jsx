@@ -39,7 +39,7 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
         progress: undefined,
         theme: "dark"
       })
-      socket.emit('calzoneViolation')
+      socket.emit('calzoneViolation', gameName)
       return
     }
     

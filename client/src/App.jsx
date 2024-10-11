@@ -3,6 +3,7 @@ import { Home } from './views/Home'
 import { Game } from './views/Game'
 import { Lobby } from './views/Lobby'
 import { Win } from './views/Win'
+import socket from './socketConfig'
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
   // socket listener for gameEnd
   useEffect(() => {
     function endGame() {
+      console.log('endGame')
       setPage('win')
     }
 
@@ -22,14 +24,14 @@ function App() {
     return () => {
       socket.off('gameEnd', endGame)
     }
-  })
+  }, [])
 
   return (
     <>
       {page === 'home' && <Home gameName={gameName} setGameName={setGameName} setPage={setPage} playerName={playerName} setPlayerName={setPlayerName} />}
       {page === 'lobby' && <Lobby gameName={gameName} setPage={setPage} players={players} setPlayers={setPlayers} />}
       {page === 'game' && <Game gameName={gameName} playerName={playerName} players={players} />}
-      {page === 'win' && <Win />}
+      {page === 'win' && <Win gameName={gameName} players={players} />}
     </>
   )
 }
