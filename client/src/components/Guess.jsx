@@ -29,46 +29,19 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
 
     // check if guess breaks calzone rules
     if(isCalzone && guessNum !== prevNum) {
-      toast.warn('You can\'t change the Dice Value during calzone', {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark"
-      })
+      toast.warn('You can\'t change the Dice Value during calzone')
       socket.emit('calzoneViolation', gameName)
       return
     }
     
     // check guess validity
     if(guessNum < prevNum) {
-      toast.warn('Dice Count must increase', {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark"
-      })
+      toast.warn('Dice Count must increase')
       return
     }
 
     if(guessNum === prevNum && guessDie <= prevDie) {
-      toast.warn('Dice Count or Value must increase', {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark"
-      })
+      toast.warn('Dice Count or Value must increase')
       return
     }
     

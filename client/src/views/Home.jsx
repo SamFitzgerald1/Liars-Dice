@@ -7,16 +7,7 @@ export function Home({gameName, setGameName, setPage, playerName, setPlayerName}
   const joinGame = useCallback(() => {
 
     if(playerName === '') {
-      toast.warn('No Username', {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-        theme: "dark"
-      })
+      toast.warn('No Username')
       return
     }
 

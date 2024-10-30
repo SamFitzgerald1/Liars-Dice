@@ -62,7 +62,7 @@ module.exports = (socket, io) => {
     // with is first turn false
     socket.on('guess', data => {
         lastGuesser[data.gameName] = data.playerName
-        socket.to(data.gameName).emit('prevGuess', {prevNum: data.guessNum, prevDie: data.guessDie})
+        socket.to(data.gameName).emit('prevGuess', {prevNum: data.guessNum, prevDie: data.guessDie, guesserName: data.playerName})
         io.in(data.gameName).emit('startTurn', {playerName: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: false})
     })
 
@@ -93,20 +93,20 @@ module.exports = (socket, io) => {
         // if ones are not wild
         if(data.prevDie === 1 || data.isCalzone) {
             if(gameDice[data.gameName][data.prevDie] < data.prevNum) {
-                io.in(data.gameName).emit('roundEnd', lastGuesser[data.gameName])
+                io.in(data.gameName).emit('roundEnd', {playerName: lastGuesser[data.gameName], callerName: socket.playerName, dice: data.prevDie, amount: gameDice[data.gameName][data.prevDie]})
                 gameStats[data.gameName][socket.playerName]['correctBullshits']++
                 gameStats[data.gameName][lastGuesser[data.gameName]]['incorrectGuesses']++
             } else {
-                io.in(data.gameName).emit('roundEnd', socket.playerName)
+                io.in(data.gameName).emit('roundEnd', {playerName: socket.playerName, callerName: socket.playerName, dice: data.prevDie, amount: gameDice[data.gameName][data.prevDie]})
                 gameStats[data.gameName][socket.playerName]['incorrectBullshits']++
             }
         } else {
             if(gameDice[data.gameName][data.prevDie] + gameDice[data.gameName][1] < data.prevNum){
-                io.in(data.gameName).emit('roundEnd', lastGuesser[data.gameName])
+                io.in(data.gameName).emit('roundEnd', {playerName: lastGuesser[data.gameName], callerName: socket.playerName, dice: data.prevDie, amount: gameDice[data.gameName][data.prevDie] + gameDice[data.gameName][1]})
                 gameStats[data.gameName][socket.playerName]['correctBullshits']++
                 gameStats[data.gameName][lastGuesser[data.gameName]]['incorrectGuesses']++
             } else {
-                io.in(data.gameName).emit('roundEnd', socket.playerName)
+                io.in(data.gameName).emit('roundEnd', {playerName: socket.playerName, callerName: socket.playerName, dice: data.prevDie, amount: gameDice[data.gameName][data.prevDie] + gameDice[data.gameName][1]})
                 gameStats[data.gameName][socket.playerName]['incorrectBullshits']++
             }
         }
@@ -128,12 +128,12 @@ module.exports = (socket, io) => {
 
     // tells all players that calzone has been called 
     socket.on('calzone', data => {
-        io.in(data).emit('setCalzone')
+        io.in(data).emit('setCalzone', socket.playerName)
     })
 
     // handles round end for a calzone violation loss
     socket.on('calzoneViolation', data => {
-        socket.emit('roundEnd', socket.playerName)
+        socket.emit('roundEnd', {playerName: socket.playerName, callerName: socket.playerName})
         gameStats[data][socket.playerName]['calzoneViolations']++
     })
 

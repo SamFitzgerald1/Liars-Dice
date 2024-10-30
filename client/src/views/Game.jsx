@@ -6,6 +6,7 @@ import { Guess } from '../components/Guess'
 import { Bullshit } from '../components/Bullshit'
 import { Calzone } from '../components/Calzone'
 import { TurnIndicator } from '../components/TurnIndicator'
+import { Display } from '../components/Display'
 
 export function Game({gameName, playerName, players}) {
     
@@ -62,6 +63,7 @@ export function Game({gameName, playerName, players}) {
       <Guess gameName={gameName} playerName={playerName} players={players} prevNum={prevNum} setPrevNum={setPrevNum} prevDie={prevDie} setPrevDie={setPrevDie} isCalzone={isCalzone} isMyTurn={isMyTurn} setIsMyTurn={setIsMyTurn} isFirstTurn={isFirstTurn} setIsFirstTurn={setIsFirstTurn} />
       <Bullshit gameName={gameName} playerName={playerName} players={players} prevNum={prevNum} prevDie={prevDie} isCalzone={isCalzone} isMyTurn={isMyTurn} setIsMyTurn={setIsMyTurn} isFirstTurn={isFirstTurn} />
       <Calzone gameName={gameName} setIsCalzone={setIsCalzone} isMyTurn={isMyTurn} isFirstTurn={isFirstTurn} hasCalzoned={hasCalzoned} setHasCalzoned={setHasCalzoned} />
+      <Display prevNum={prevNum} prevDie={prevDie} />
       <Players players={players} />
     </>
   )

@@ -63,35 +63,37 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft,
     // handles change between current and next round
     function endRound(data) {
 
-      const tempDice = Object.assign({}, dice)
+      setTimeout(() => {
+        const tempDice = Object.assign({}, dice)
 
-      // remove one die from losing player
-      if(playerName === data) {
-        for(let key of Object.keys(tempDice)) {
-          if(tempDice[key] !== DICE_IMAGES[0]) {
-            tempDice[key] = DICE_IMAGES[0]
-            // written strangely to prevent unecessary changes
-            if(key === 'die5') setIsOut(true)
-            break
+        // remove one die from losing player
+        if(playerName === data.playerName) {
+          for(let key of Object.keys(tempDice)) {
+            if(tempDice[key] !== DICE_IMAGES[0]) {
+              tempDice[key] = DICE_IMAGES[0]
+              // written strangely to prevent unecessary updates
+              if(key === 'die5') setIsOut(true)
+              break
+            }
           }
         }
-      }
 
-      tempDice.die1 = tempDice.die1 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
-      tempDice.die2 = tempDice.die2 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
-      tempDice.die3 = tempDice.die3 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
-      tempDice.die4 = tempDice.die4 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
-      tempDice.die5 = tempDice.die5 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+        tempDice.die1 = tempDice.die1 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+        tempDice.die2 = tempDice.die2 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+        tempDice.die3 = tempDice.die3 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+        tempDice.die4 = tempDice.die4 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
+        tempDice.die5 = tempDice.die5 !== DICE_IMAGES[0] ? roll() : DICE_IMAGES[0]
 
-      setDice(tempDice)
+        setDice(tempDice)
 
-      // reset value of previous guess set in Guess.jsx
-      setPrevNum(0)
-      setPrevDie(0)
+        // reset value of previous guess set in Guess.jsx
+        setPrevNum(0)
+        setPrevDie(0)
 
-      setIsCalzone(false)
-      
-      socket.emit('roundStart', {gameName: gameName, loser: data})
+        setIsCalzone(false)
+        
+        socket.emit('roundStart', {gameName: gameName, loser: data.playerName})
+      }, 5500)
 
     }
     
