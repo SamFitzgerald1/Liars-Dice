@@ -140,4 +140,36 @@ module.exports = (socket, io) => {
     socket.on('getStats', data => {
         io.in(data).emit('giveStats', gameStats[data])
     })
+
+    socket.on('rematch', data => {
+        delete gameDice[data]
+        delete lastGuesser[data]
+        delete gameEndIndicator[data]
+        delete gameStats[data]
+        io.in(data).emit('lobbyPage')
+    })
+
+    socket.on('end', data => {
+        delete gameDice[data]
+        delete lastGuesser[data]
+        delete gameEndIndicator[data]
+        delete gameStats[data]
+        io.in(data).emit('homePage')
+        io.socketsLeave(data)
+    })
+
+    socket.on('disconnecting', data => {
+        const iter = socket.rooms.values()
+        iter.next()
+        const gameName = iter.next().value
+
+        // use gameName to check if: 
+        // 1. game is ongoing or over
+        // 2. if over delete all related data
+        // 3. if game ongoing remove player from game 
+        //    3a) includes removing from turn order and players component
+        //    3b) restart the round without removing anyones dice
+        // 4. if the room is ever empty upon a person leaving, delete all related data (note: do this check first probably)
+    })
+
 }

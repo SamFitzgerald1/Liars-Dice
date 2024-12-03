@@ -1,9 +1,24 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import socket from '../socketConfig'
 import { toast } from 'react-toastify'
 
 export function Home({gameName, setGameName, setPage, playerName, setPlayerName}) {
 
+  // // socket listener for 'home'
+  // useEffect(() => {
+
+  //   function setPageHome() {
+  //     setPage('home')
+  //   }
+
+  //   socket.on('homePage', setPageHome)
+
+  //   return () => {
+  //     socket.off('homePage', setPageHome)
+  //   }
+
+  // }, [])
+  
   const joinGame = useCallback(() => {
 
     if(playerName === '') {
