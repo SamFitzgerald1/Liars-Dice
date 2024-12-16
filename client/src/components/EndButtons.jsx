@@ -15,12 +15,12 @@ export function EndButtons({gameName, players, playerName}) {
     }
     if(option === options.REMATCH) socket.emit('rematch', gameName)
     if(option === options.END) socket.emit('end', gameName)
-  })
+  }, [players])
     
   return (
     <>
-      <button onClick={handleClick(REMATCH)} >Rematch</button>
-      <button onClick={handleClick(END)} >End Game</button>
+      <button onClick={handleClick(options.REMATCH)} >Rematch</button>
+      <button onClick={handleClick(options.END)} >End Game</button>
     </>
   )
 }

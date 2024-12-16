@@ -6,14 +6,25 @@ const lastGuesser = {}
 const gameEndIndicator = {}
 // holds game statistics for each player
 const gameStats = {}
+// holds in progress games
+const inProg = {}
 
 module.exports = (socket, io) => {
 
     // adds socket to game room
-    socket.on('joinGame', data => {
+    socket.on('joinGame', async data => {
         // socket knows player-given username
         socket.playerName = data.playerName
-        socket.join(data.gameName)
+        const tempPlayerNames = await io.in(data.gameName).fetchSockets()
+        for(let i = 0; i < tempPlayerNames.length; i++)
+            tempPlayerNames[i] = tempPlayerNames[i].playerName
+        console.log('hello ' + tempPlayerNames.includes(data.playerName))
+        if(inProg[data.gameName]) socket.emit('inProg') 
+        else if(tempPlayerNames.includes(data.playerName)) socket.emit('nameTaken')
+        else {
+            socket.join(data.gameName)
+            socket.emit('joinSuccess')
+        }
         // gameStats[data.gameName][socket.playerName] = {
         //     correctBullshits: 0,
         //     incorrectBullshits: 0,
@@ -21,7 +32,7 @@ module.exports = (socket, io) => {
         //     calzoneViolations: 0,
         //     position: 0
         // }
-        console.log('player ' + socket.playerName + ' joined ' + data.gameName)
+        //console.log('player ' + socket.playerName + ' joined ' + data.gameName)
     })
 
     // sends list of socket usernames back to all players
@@ -31,9 +42,12 @@ module.exports = (socket, io) => {
             playersArr[i] = playersArr[i].playerName
         
         io.in(data).emit('givePlayers', playersArr)
+        // game is over when this number of players is out
+        gameEndIndicator[data] = playersArr.length
     })
 
     socket.on('startGame', data => {
+        inProg[data.gameName] = true
         gameDice[data.gameName] = {
             0: 0,
             1: 0,
@@ -43,8 +57,8 @@ module.exports = (socket, io) => {
             5: 0,
             6: 0
         }
-        // game is over when this number of players is out
-        gameEndIndicator[data.gameName] = data.players.length - 1
+        // // game is over when this number of players is out
+        // gameEndIndicator[data.gameName] = data.players.length - 1
         gameStats[data.gameName] = {}
         for(let i = 0; i < data.players.length; i++) {
             gameStats[data.gameName][data.players[i]] = {
@@ -62,7 +76,7 @@ module.exports = (socket, io) => {
     // with is first turn false
     socket.on('guess', data => {
         lastGuesser[data.gameName] = data.playerName
-        socket.to(data.gameName).emit('prevGuess', {prevNum: data.guessNum, prevDie: data.guessDie, guesserName: data.playerName})
+        io.in(data.gameName).emit('prevGuess', {prevNum: data.guessNum, prevDie: data.guessDie, guesserName: data.playerName})
         io.in(data.gameName).emit('startTurn', {playerName: data.players[(data.players.indexOf(data.playerName) + 1) % data.players.length], isFirstTurn: false})
     })
 
@@ -158,18 +172,54 @@ module.exports = (socket, io) => {
         io.socketsLeave(data)
     })
 
-    socket.on('disconnecting', data => {
+    socket.on('disconnecting', async reason => {
         const iter = socket.rooms.values()
         iter.next()
         const gameName = iter.next().value
+
+        const playersArr = await io.in(gameName).fetchSockets()
+        for(let i = 0; i < playersArr.length; i++)
+            playersArr[i] = playersArr[i].playerName
+        
+        console.log('socket disconnecting')
 
         // use gameName to check if: 
         // 1. game is ongoing or over
         // 2. if over delete all related data
         // 3. if game ongoing remove player from game 
         //    3a) includes removing from turn order and players component
-        //    3b) restart the round without removing anyones dice
+        //    3b) restart the round 
         // 4. if the room is ever empty upon a person leaving, delete all related data (note: do this check first probably)
+
+        console.log(io.sockets.adapter.rooms.get(gameName))
+        
+        // trouble here might come from closing the tab after this condition has already passed, meaning the room was closed by me!!!
+        // possibly working after adding the first part of the if below
+        if(io.sockets.adapter.rooms.get(gameName) && io.sockets.adapter.rooms.get(gameName).size === 1) {
+            delete gameDice[gameName]
+            delete lastGuesser[gameName]
+            delete gameEndIndicator[gameName]
+            delete gameStats[gameName]
+            io.in(gameName).emit('homePage')
+            io.socketsLeave(gameName)
+        }
+
+        console.log(gameEndIndicator[gameName])
+
+        if(gameEndIndicator[gameName] === 0) {
+            console.log('thing 1')
+            delete gameDice[gameName]
+            delete lastGuesser[gameName]
+            delete gameEndIndicator[gameName]
+            delete gameStats[gameName]
+            io.in(gameName).emit('homePage')
+            io.socketsLeave(gameName)
+        } else {
+            console.log('thing 2')
+            gameEndIndicator[gameName]--
+            io.in(gameName).emit('leave', socket.playerName)
+        }
+        
     })
 
 }

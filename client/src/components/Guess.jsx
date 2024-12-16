@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import socket from '../socketConfig'
 import { toast } from 'react-toastify'
 
-export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevDie, setPrevDie, isCalzone, isMyTurn, setIsMyTurn, isFirstTurn, setIsFirstTurn}) {
+export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevDie, setPrevDie, isCalzone, isMyTurn, setIsMyTurn}) {
   
   const [guessNum, setGuessNum] = useState(1)
   const [guessDie, setGuessDie] = useState(1)
@@ -48,7 +48,7 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
     socket.emit('guess', {guessNum, guessDie, gameName, playerName, players})
     setIsMyTurn(false)
 
-  }, [isMyTurn, isCalzone, guessNum, prevNum, guessDie, prevDie])
+  }, [isMyTurn, isCalzone, guessNum, prevNum, guessDie, prevDie, players])
     
   return (
     <>

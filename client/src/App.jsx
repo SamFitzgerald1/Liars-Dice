@@ -14,6 +14,7 @@ function App() {
 
   // socket listener for gameEnd
   useEffect(() => {
+
     function endGame() {
       console.log('endGame')
       setPage('win')
@@ -24,13 +25,29 @@ function App() {
     return () => {
       socket.off('gameEnd', endGame)
     }
+
+  }, [])
+
+  // socket listener for 'homePage'
+  useEffect(() => {
+
+    function setPageHome() {
+      setPage('home')
+    }
+
+    socket.on('homePage', setPageHome)
+
+    return () => {
+      socket.off('homePage', setPageHome)
+    }
+
   }, [])
 
   return (
     <>
       {page === 'home' && <Home gameName={gameName} setGameName={setGameName} setPage={setPage} playerName={playerName} setPlayerName={setPlayerName} />}
       {page === 'lobby' && <Lobby gameName={gameName} setPage={setPage} players={players} setPlayers={setPlayers} />}
-      {page === 'game' && <Game gameName={gameName} playerName={playerName} players={players} />}
+      {page === 'game' && <Game gameName={gameName} playerName={playerName} players={players}  setPlayers={setPlayers}/>}
       {page === 'win' && <Win gameName={gameName} players={players} playerName={playerName} />}
     </>
   )

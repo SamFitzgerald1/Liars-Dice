@@ -47,7 +47,10 @@ export function Lobby({gameName, setPage, players, setPlayers}) {
   return (
     <>
       <button onClick={startGame}>Start Game</button>
-      <Players players={players} />
+      <Players
+        players={players}
+        setPlayers={setPlayers}
+      />
     </>
   )
 }

@@ -4,20 +4,50 @@ import { toast } from 'react-toastify'
 
 export function Home({gameName, setGameName, setPage, playerName, setPlayerName}) {
 
-  // // socket listener for 'home'
-  // useEffect(() => {
+  // socket listener for nameTaken
+  useEffect(() => {
 
-  //   function setPageHome() {
-  //     setPage('home')
-  //   }
+    function taken() {
+      toast.warn('Name in use Within Chosen Game')
+    }
 
-  //   socket.on('homePage', setPageHome)
+    socket.on('nameTaken', taken)
 
-  //   return () => {
-  //     socket.off('homePage', setPageHome)
-  //   }
+    return () => {
+      socket.off('nameTaken', taken)
+    }
 
-  // }, [])
+  }, [])
+
+  // socket listener for inProg
+  useEffect(() => {
+
+    function inProgress() {
+      toast.warn('This Game is in Already Progress')
+    }
+
+    socket.on('inProg', inProgress)
+
+    return () => {
+      socket.off('inProg', inProgress)
+    }
+    
+  }, [])
+
+  // socket listener for joinSuccess
+  useEffect(() => {
+
+    function success() {
+      setPage('lobby')
+    }
+
+    socket.on('joinSuccess', success)
+
+    return () => {
+      socket.off('joinSuccess', success)
+    }
+    
+  }, [])
   
   const joinGame = useCallback(() => {
 
@@ -26,8 +56,12 @@ export function Home({gameName, setGameName, setPage, playerName, setPlayerName}
       return
     }
 
+    if(gameName == '') {
+      toast.warn('No Game Name')
+      return
+    }
+
     socket.emit('joinGame', {gameName, playerName})
-    setPage('lobby')
     
   }, [playerName, gameName])
 

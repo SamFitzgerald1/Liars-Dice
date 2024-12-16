@@ -5,21 +5,6 @@ import socket from '../socketConfig'
 
 export function Win({gameName, players, playerName}) {
 
-  // socket listener for 'homePage'
-  useEffect(() => {
-
-    function setPageHome() {
-      setPage('home')
-    }
-
-    socket.on('homePage', setPageHome)
-
-    return () => {
-      socket.off('homePage', setPageHome)
-    }
-
-  }, [])
-
   // socket listener for 'lobbyPage'
   useEffect(() => {
 
@@ -38,8 +23,15 @@ export function Win({gameName, players, playerName}) {
   return (
     <>
       You Win!!!
-      <Stats gameName={gameName} players={players} />
-      <EndButtons gameName={gameName} players={players} playerName={playerName} />
+      <Stats
+        gameName={gameName}
+        players={players}
+      />
+      <EndButtons
+        gameName={gameName}
+        players={players}
+        playerName={playerName}
+      />
     </>
   )
 }

@@ -23,7 +23,7 @@ const DICE_IMAGES = {
 // for converting dice images to number values
 const DICE_IMAGE_KEYS = [0, 1, 2, 3, 4, 5, 6]
 
-export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, diceLeft, setDiceLeft, isMyTurn, setIsFirstTurn, setIsCalzone, setIsOut}) {
+export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, setIsCalzone, setIsOut}) {
 
   const roll = useCallback(() => {
     return DICE_IMAGES[Math.floor(Math.random() * 6) + 1]

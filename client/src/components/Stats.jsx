@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import socket from '../socketConfig'
 
 export function Stats({gameName, players}) {
@@ -9,10 +9,10 @@ export function Stats({gameName, players}) {
     socket.emit('getStats', gameName)
   }, [])
 
+  // socket listener for giveStats
   useEffect(() => {
+
     function statsSet(data) {
-      console.log('data')
-      console.log(data)
       setStats(data)
     }
 
@@ -21,15 +21,11 @@ export function Stats({gameName, players}) {
     return () => {
       socket.off('giveStats', statsSet)
     }
+    
   }, [])
-
-  const show = () => {
-    Object.keys(stats[players[0]]).forEach(key => {console.log(stats[players[0]][key])})
-  }
   
   return (
     <>
-      <button onClick={show}>show</button>
       <table>
         <tbody>
           <tr>

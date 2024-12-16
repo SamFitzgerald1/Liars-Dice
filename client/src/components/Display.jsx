@@ -9,9 +9,18 @@ export function Display({prevNum, prevDie}) {
     
   return (
     <>
-      <ShowGuess prevNum={prevNum} prevDie={prevDie} />
-      <ShowCalzone callerName={callerName} setCallerName={setCallerName} />
-      <ShowBullshit callerName={callerName} setCallerName={setCallerName} />
+      <ShowGuess
+        prevNum={prevNum}
+        prevDie={prevDie}
+      />
+      <ShowCalzone
+        callerName={callerName}
+        setCallerName={setCallerName}
+      />
+      <ShowBullshit
+        callerName={callerName}
+        setCallerName={setCallerName}
+      />
     </>
   )
 }
