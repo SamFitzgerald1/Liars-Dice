@@ -1,0 +1,13 @@
+.dicebox {
+    display: flex;
+    background-color: var(--colour-primary);
+    gap: 1rem;
+    border: 1px solid;
+    border-color: var(--colour-accent-two);
+    border-radius: 6px;
+}
+
+.dicebox * {
+    margin: 5px 0 5px;
+    max-width: 20%;
+}

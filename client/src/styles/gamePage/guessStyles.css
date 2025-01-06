@@ -1,0 +1,17 @@
+.guess * {
+    margin: 5px 0 5px 0;
+}
+
+.guessNumIn, .guessDieIn {
+    border: none;
+    border-radius: 6px;
+    height: 30%;
+    width: 5%;
+    text-align: center;
+}
+
+.guessNumIn::-webkit-outer-spin-button,
+.guessNumIn::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

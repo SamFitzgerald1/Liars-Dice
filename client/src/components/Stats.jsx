@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import '../styles/winPage/statsStyles.css'
 import socket from '../socketConfig'
 
-export function Stats({gameName, players}) {
+export function Stats({gameName}) {
 
   const [stats, setStats] = useState({})
 
@@ -25,7 +26,7 @@ export function Stats({gameName, players}) {
   }, [])
   
   return (
-    <>
+    <div className='statsTable'>
       <table>
         <tbody>
           <tr>
@@ -50,6 +51,6 @@ export function Stats({gameName, players}) {
           })}
         </tbody>       
       </table>
-    </>
+    </div>
   )
 }

@@ -29,8 +29,8 @@ export function ShowCalzone({callerName, setCallerName}) {
   }, [])
     
   return (
-    <>
-      {calzoneAlert && <div>{callerName} called calzone!</div>}
-    </>
+    <div className='calzoneDisplay'>
+      {calzoneAlert && <p>{callerName} called calzone!</p>}
+    </div>
   )
 }

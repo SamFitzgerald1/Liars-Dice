@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import socket from '../socketConfig'
+import '../styles/componentStyles/playersStyles.css'
 
-export function Players({players, setPlayers}) {
+export function Players({players, setPlayers, gameName}) {
 
   // socket listener for leave
   useEffect(() => {
@@ -21,11 +22,11 @@ export function Players({players, setPlayers}) {
   }, [players])
 
   return (
-    <>
-      <h1>Players</h1>
-      <ul>
-        {players.map(player => <li key={player}>{player}</li>)}
+    <div className='players'>
+      <h1 className='gameName'>{gameName}</h1>
+      <ul className='playerList'>
+        {players.map(player => <li className='player' key={player}>{player}</li>)}
       </ul>
-    </>
+    </div>
   )
 }

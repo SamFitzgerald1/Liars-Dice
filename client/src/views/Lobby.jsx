@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react"
 import socket from "../socketConfig"
 import { Players } from "../components/Players"
+import '../styles/lobbyPage/lobbyPageStyles.css'
 
 export function Lobby({gameName, setPage, players, setPlayers}) {
 
@@ -40,17 +41,20 @@ export function Lobby({gameName, setPage, players, setPlayers}) {
   }, [])
 
   const startGame = useCallback(() => {
-    console.log(players)
     socket.emit('startGame', {gameName: gameName, players: players})
   }, [players])
   
   return (
-    <>
-      <button onClick={startGame}>Start Game</button>
-      <Players
+    <div className="lobby">
+      <button className="btn startGame"
+        onClick={startGame}>
+          Start Game
+      </button>
+      <Players className="players"
         players={players}
         setPlayers={setPlayers}
+        gameName={gameName}
       />
-    </>
+    </div>
   )
 }

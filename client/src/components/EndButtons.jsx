@@ -1,4 +1,6 @@
 import React, { useCallback } from 'react'
+import { toast } from 'react-toastify'
+import '../styles/winPage/endButtonStyles.css'
 import socket from '../socketConfig'
 
 const options = {
@@ -18,9 +20,17 @@ export function EndButtons({gameName, players, playerName}) {
   }, [players])
     
   return (
-    <>
-      <button onClick={handleClick(options.REMATCH)} >Rematch</button>
-      <button onClick={handleClick(options.END)} >End Game</button>
-    </>
+    <div className='endButtons'>
+      <button className='endBtn'
+        onClick={() => handleClick(options.REMATCH)}
+      >
+        Rematch
+      </button>
+      <button className='endBtn'
+        onClick={() => handleClick(options.END)}
+      >
+        End Game
+      </button>
+    </div>
   )
 }

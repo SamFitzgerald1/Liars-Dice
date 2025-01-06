@@ -1,0 +1,23 @@
+.win {
+    display: grid;
+    gap: 1.6rem;
+    grid-template-rows: repeat(3, auto);
+    grid-template-columns: auto;
+    grid-template-areas:
+        'logo'
+        'statsTable'
+        'endButtons' 
+    ;
+}
+
+.logo {
+    grid-area: logo;
+}
+
+.statsTable {
+    grid-area: statsTable;
+}
+
+.endButtons {
+    grid-area: endButtons;
+}

@@ -7,6 +7,7 @@ import { Bullshit } from '../components/Bullshit'
 import { Calzone } from '../components/Calzone'
 import { TurnIndicator } from '../components/TurnIndicator'
 import { Display } from '../components/Display'
+import '../styles/gamePage/gamePageStyles.css'
 
 export function Game({gameName, playerName, players, setPlayers}) {
     
@@ -20,6 +21,7 @@ export function Game({gameName, playerName, players, setPlayers}) {
 
   const [isCalzone, setIsCalzone] = useState(false)
   const [hasCalzoned, setHasCalzoned] = useState(false)
+  const [oneDie, setOneDie] = useState(false)
 
   // starts the first turn of the game
   useEffect(() => {
@@ -56,7 +58,7 @@ export function Game({gameName, playerName, players, setPlayers}) {
   }, [isOut])
 
   return (
-    <>
+    <div className='game'>
       {isMyTurn && <TurnIndicator />}
       <DiceBox
         gameName={gameName}
@@ -65,6 +67,7 @@ export function Game({gameName, playerName, players, setPlayers}) {
         setPrevDie={setPrevDie}
         setIsCalzone={setIsCalzone}
         setIsOut={setIsOut}
+        setOneDie={setOneDie}
       />
       <Guess
         gameName={gameName}
@@ -96,6 +99,7 @@ export function Game({gameName, playerName, players, setPlayers}) {
         isFirstTurn={isFirstTurn}
         hasCalzoned={hasCalzoned}
         setHasCalzoned={setHasCalzoned}
+        oneDie={oneDie}
       />
       <Display
         prevNum={prevNum}
@@ -105,6 +109,6 @@ export function Game({gameName, playerName, players, setPlayers}) {
         players={players}
         setPlayers={setPlayers}
       />
-    </>
+    </div>
   )
 }

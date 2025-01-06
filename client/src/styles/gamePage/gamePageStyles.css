@@ -1,0 +1,59 @@
+.game {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    gap: 1.6rem;
+    grid-template-columns: 300px 300px 150px;
+    grid-template-rows: repeat(4, 100px);
+    grid-template-areas:
+        "dicebox  dicebox players"
+        "display  display players"
+        "guess    guess   players"
+        "bullshit calzone turnIndicator"
+        ;
+}
+
+.turnIndicator {
+    grid-area: turnIndicator;
+    align-content: center;
+    text-align: center;
+}
+
+.dicebox {
+    grid-area: dicebox;
+    justify-content: center;
+}
+
+.guess {
+    grid-area: guess;
+    align-content: center;
+    text-align: center;
+}
+
+.bullshit {
+    grid-area: bullshit;
+    align-content: center;
+    text-align: center;
+}
+
+.calzone {
+    grid-area: calzone;
+    align-content: center;
+    text-align: center;
+}
+
+.display {
+    grid-area: display;
+}
+
+.players {
+    grid-area: players;
+}
+
+.gameBtn {
+    background-color: var(--colour-accent-one);
+    border: none;
+    border-radius: 6px;
+    height: 50%;
+    width: 100%;
+}

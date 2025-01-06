@@ -1,0 +1,16 @@
+.lobby {
+    display: grid;
+    gap: 1.6rem;
+    grid-template-areas: 
+        "startGame"
+        "players"
+    ;
+}
+
+.startGame {
+    grid-area: startGame;
+}
+
+.players {
+    grid-area: players;
+}

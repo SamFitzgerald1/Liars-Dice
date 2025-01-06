@@ -1,0 +1,33 @@
+:root {
+    --colour-primary: #14203E;
+    --colour-accent-one: #fca311;
+    --coulour-accent-one-dark: hsl(from var(--colour-accent-one) h s calc(l - 5));
+    --colour-accent-two: #38a885;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: var(--colour-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--colour-accent-two);
+}
+
+.btn {
+    background-color: var(--colour-accent-one);
+    border: none;
+    border-radius: 6px;
+    height: 200%;
+    width: 100%;
+}
+
+.btn:hover, .gameBtn:hover, .endBtn:hover {
+    background-color: var(--coulour-accent-one-dark);
+}
+
+.logo {
+    width: 100%;
+}

@@ -1,0 +1,12 @@
+.endButtons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.endBtn {
+    background-color: var(--colour-accent-one);
+    border: none;
+    border-radius: 6px;
+    width: 45%;
+    height: 50px;
+}

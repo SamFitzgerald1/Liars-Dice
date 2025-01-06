@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import DiceImage0 from '../images/dice0.jpg'
+import DiceImage0 from '../images/dice0.png'
 import DiceImage1 from '../images/Dice1.png'
 import DiceImage2 from '../images/Dice2.png'
 import DiceImage3 from '../images/Dice3.png'
@@ -9,6 +9,8 @@ import DiceImage5 from '../images/Dice5.png'
 import DiceImage6 from '../images/Dice6.png'
 
 import socket from '../socketConfig'
+
+import '../styles/gamePage/diceboxStyles.css'
 
 const DICE_IMAGES = {
   0: DiceImage0,
@@ -23,7 +25,7 @@ const DICE_IMAGES = {
 // for converting dice images to number values
 const DICE_IMAGE_KEYS = [0, 1, 2, 3, 4, 5, 6]
 
-export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, setIsCalzone, setIsOut}) {
+export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, setIsCalzone, setIsOut, setOneDie}) {
 
   const roll = useCallback(() => {
     return DICE_IMAGES[Math.floor(Math.random() * 6) + 1]
@@ -71,8 +73,11 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, setIsCalz
           for(let key of Object.keys(tempDice)) {
             if(tempDice[key] !== DICE_IMAGES[0]) {
               tempDice[key] = DICE_IMAGES[0]
-              // written strangely to prevent unecessary updates
-              if(key === 'die5') setIsOut(true)
+              if(key === 'die4') setOneDie(true)
+              if(key === 'die5') {
+                setIsOut(true)
+                setOneDie(false)
+              }
               break
             }
           }
@@ -106,12 +111,12 @@ export function DiceBox({gameName, playerName, setPrevNum, setPrevDie, setIsCalz
   }, [dice])
 
   return (
-    <>
+    <div className='dicebox'>
       <img src={dice.die1} />
       <img src={dice.die2} />
       <img src={dice.die3} />
       <img src={dice.die4} />
       <img src={dice.die5} />
-    </>
+    </div>
   )
 }

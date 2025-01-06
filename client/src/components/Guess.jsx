@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import socket from '../socketConfig'
 import { toast } from 'react-toastify'
+import '../styles/gamePage/guessStyles.css'
 
 export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevDie, setPrevDie, isCalzone, isMyTurn, setIsMyTurn}) {
   
@@ -51,19 +52,18 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
   }, [isMyTurn, isCalzone, guessNum, prevNum, guessDie, prevDie, players])
     
   return (
-    <>
-      <label htmlFor="guessNum">How many dice</label>
-      <input
+    <div className='guess'>
+      <label htmlFor="guessNum">How many dice? </label>
+      <input className='guessNumIn'
         type="number"
         name="guessNum"
         id="guessNum"
         value={guessNum}
         onChange={e => setGuessNum(e.target.value)}
-        min="1"
       />
 
-      <label htmlFor="guessDie">What dice value</label>
-      <select
+      <label htmlFor="guessDie"> What dice value? </label>
+      <select className='guessDieIn'
         name="guessDie"
         id="guessDie"
         value={guessDie}
@@ -77,7 +77,10 @@ export function Guess({gameName, playerName, players, prevNum, setPrevNum, prevD
         <option value="6">6</option>
       </select>
 
-      <button onClick={guess}>Guess</button>
-    </>
+      <button className='gameBtn'
+        onClick={guess}>
+          Guess
+      </button>
+    </div>
   )
 }

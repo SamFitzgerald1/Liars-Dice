@@ -34,14 +34,14 @@ export function ShowBullshit({callerName, setCallerName}) {
   }, [])
     
   return (
-    <>
-      {bullshitAlert && 
+    <div className='bullshitDisplay'>
+      {bullshitAlert &&
         <div>
           <div>{callerName} called bullshit!</div>
           <div>There are {amount} {value}'s</div>
           <div>{dieLoser} will lose one die!</div>
         </div>
       }
-    </>
+    </div>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import socket from '../socketConfig'
 
-export function Calzone({gameName, setIsCalzone, isMyTurn, isFirstTurn, hasCalzoned, setHasCalzoned}) {
+export function Calzone({gameName, setIsCalzone, isMyTurn, isFirstTurn, hasCalzoned, setHasCalzoned, oneDie}) {
 
   // for socket listener 'setCalzone'
   useEffect(() => {
@@ -21,7 +21,7 @@ export function Calzone({gameName, setIsCalzone, isMyTurn, isFirstTurn, hasCalzo
   const calzone = useCallback(() => {
 
     // check if calzone call is allowed
-    if(!isMyTurn || !isFirstTurn || hasCalzoned) return
+    if(!isMyTurn || !isFirstTurn || hasCalzoned || !oneDie) return
 
     socket.emit('calzone', gameName)
 
@@ -30,8 +30,11 @@ export function Calzone({gameName, setIsCalzone, isMyTurn, isFirstTurn, hasCalzo
   }, [isMyTurn, isFirstTurn, hasCalzoned])
     
   return (
-    <>
-      <button onClick={calzone}>Calzone!</button>
-    </>
+    <div className='calzone'>
+      <button className='gameBtn'
+        onClick={calzone}>
+          Calzone!
+      </button>
+    </div>
   )
 }

@@ -1,0 +1,17 @@
+.gameName {
+    text-align: center;
+}
+
+.playerList {
+    border: 1px solid var(--colour-accent-two);
+    border-radius: 6px;
+    padding-left: 0;
+    margin-top: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.player {
+    list-style-type: none;
+    padding: 10% 0;
+}

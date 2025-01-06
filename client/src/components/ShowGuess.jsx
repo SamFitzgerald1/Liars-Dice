@@ -21,14 +21,9 @@ export function ShowGuess({prevNum, prevDie}) {
   }, [])
   
   return (
-    <>
-      <p>guesserName</p>
-      <p>{guesserName}</p>
-      <p>prevNum</p>
-      <p>{prevNum}</p>
-      <p>prevDie</p>
-      <p>{prevDie}</p>
-    </>
+    <div className='guessDisplay'>
+      {guesserName && <p>{guesserName} says there are {prevNum} {prevDie}s</p>}
+    </div>
   )
 }
 

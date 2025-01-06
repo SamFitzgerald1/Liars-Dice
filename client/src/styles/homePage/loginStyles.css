@@ -1,0 +1,8 @@
+.loginElmnt {
+    box-sizing: border-box;
+    width: 100%;
+    height: 200%;
+    border-radius: 6px;
+    border: none;
+    text-align: center;
+}

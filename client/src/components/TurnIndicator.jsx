@@ -2,7 +2,7 @@ import React from 'react'
 
 export function TurnIndicator() {
   return (
-    <div>
+    <div className='turnIndicator'>
       Your Turn
     </div >
   )

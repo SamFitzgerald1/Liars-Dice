@@ -1,0 +1,27 @@
+.display {
+    display: grid;
+    /* column-gap: 0.8rem; */
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 50% 50%;
+    grid-template-areas: 
+        "guessDisplay    guessDisplay"
+        "bullshitDisplay calzoneDisplay"
+        ;
+}
+
+.display * {
+    text-align: center;
+    align-content: center;
+}
+
+.guessDisplay {
+    grid-area: guessDisplay;
+}
+
+.bullshitDisplay {
+    grid-area: bullshitDisplay;
+}
+
+.calzoneDisplay {
+    grid-area: calzoneDisplay;
+}

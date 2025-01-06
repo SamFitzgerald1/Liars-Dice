@@ -12,6 +12,11 @@ export function Bullshit({gameName, playerName, players, prevNum, prevDie, isCal
   }, [isMyTurn, isFirstTurn, prevNum, prevDie, isCalzone, players])
   
   return (
-    <button onClick={bullshit}>Bullshit!</button>
+    <div className='bullshit'>
+      <button className='gameBtn'
+        onClick={bullshit}>
+          Bullshit!
+      </button>
+    </div>
   )
 }
