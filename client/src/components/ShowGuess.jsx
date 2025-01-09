@@ -22,7 +22,7 @@ export function ShowGuess({prevNum, prevDie}) {
   
   return (
     <div className='guessDisplay'>
-      {guesserName && <p>{guesserName} says there are {prevNum} {prevDie}s</p>}
+      {(guesserName && prevDie !== 0) && <p>{guesserName} says there are {prevNum} {prevDie}s</p>}
     </div>
   )
 }

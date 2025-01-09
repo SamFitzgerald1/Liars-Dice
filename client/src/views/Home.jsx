@@ -10,7 +10,13 @@ export function Home({gameName, setGameName, setPage, playerName, setPlayerName}
         src={logo}
         alt="Liar's Dice Logo"
       />
-      <Login gameName={gameName} setGameName={setGameName} setPage={setPage} playerName={playerName} setPlayerName={setPlayerName} />
+      <Login
+        gameName={gameName}
+        setGameName={setGameName}
+        setPage={setPage}
+        playerName={playerName}
+        setPlayerName={setPlayerName}
+      />
     </div>
   )
 }

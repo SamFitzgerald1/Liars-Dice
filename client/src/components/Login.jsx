@@ -67,7 +67,7 @@ export function Login({gameName, setGameName, setPage, playerName, setPlayerName
   }, [playerName, gameName])
     
   return (
-    <>
+    <div className='login'>
       <input className='loginElmnt'
         type='text'
         placeholder='Player Name' 
@@ -82,7 +82,7 @@ export function Login({gameName, setGameName, setPage, playerName, setPlayerName
         onKeyDown={e => e.key === 'Enter' && joinGame}
       />
       <button className='btn' onClick={joinGame}>Join or Create Game</button>
-    </>
+    </div>
   )
 }
 

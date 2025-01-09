@@ -1,4 +1,21 @@
 .home {
     display: grid;
     gap: 1.6rem;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+        'logo'
+        'login'
+    ;
+}
+
+.logo {
+    grid-area: logo;
+}
+
+.login {
+    grid-area: login;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
 }

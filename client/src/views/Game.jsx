@@ -59,7 +59,10 @@ export function Game({gameName, playerName, players, setPlayers}) {
 
   return (
     <div className='game'>
-      {isMyTurn && <TurnIndicator />}
+      <TurnIndicator
+        players={players}
+        isMyTurn={isMyTurn}
+      />
       <DiceBox
         gameName={gameName}
         playerName={playerName}

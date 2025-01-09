@@ -1,8 +1,10 @@
 :root {
     --colour-primary: #14203E;
+    --color-primary-dark: hsl(from var(--colour-primary) h s calc(l - 5));
     --colour-accent-one: #fca311;
-    --coulour-accent-one-dark: hsl(from var(--colour-accent-one) h s calc(l - 5));
+    --colour-accent-one-dark: hsl(from var(--colour-accent-one) h s calc(l - 5));
     --colour-accent-two: #38a885;
+    --colour-accent-two-dark: hsl(from var(--colour-accent-two) h s calc(l - 5))
 }
 
 html, body {
@@ -25,9 +27,23 @@ html, body {
 }
 
 .btn:hover, .gameBtn:hover, .endBtn:hover {
-    background-color: var(--coulour-accent-one-dark);
+    background-color: var(--colour-accent-one-dark);
 }
 
 .logo {
     width: 100%;
+}
+
+::-webkit-scrollbar {
+    background-color: var(--color-primary-dark);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--colour-accent-two);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--colour-accent-two-dark);
 }

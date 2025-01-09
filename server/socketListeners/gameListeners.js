@@ -65,7 +65,7 @@ module.exports = (socket, io) => {
                 'incorrectBullshits': 0,
                 'incorrectGuesses': 0,
                 'calzoneViolations': 0,
-                'position': 0
+                'position': 1
             }
         }
         io.in(data.gameName).emit('gamePage')
@@ -133,7 +133,7 @@ module.exports = (socket, io) => {
     // if count is zero (only one player left in game) tell all sockets game is over
     socket.on('playerOut', data => {
         if(data.isOut) {
-            gameStats[data.gameName][socket.playerName]['position'] = gameEndIndicator[data.gameName] + 1
+            gameStats[data.gameName][socket.playerName]['position'] = gameEndIndicator[data.gameName]
             gameEndIndicator[data.gameName]--
         }
         if(gameEndIndicator[data.gameName] === 1) io.in(data.gameName).emit('gameEnd')
